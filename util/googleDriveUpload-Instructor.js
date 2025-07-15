@@ -6,10 +6,17 @@ import { v4 as uuidv4 } from "uuid"; // Generate unique IDs
 
 dotenv.config();
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(process.cwd(), "util/service-account.json"),
-  scopes: ["https://www.googleapis.com/auth/drive.file"],
-});
+// const auth = new google.auth.GoogleAuth({
+//   keyFile: path.join(process.cwd(), "util/service-account.json"),
+//   scopes: ["https://www.googleapis.com/auth/drive.file"],
+// });
+
+const auth = new google.auth.JWT(
+  process.env.GOOGLE_CLIENT_EMAIL,
+  null,
+  process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  ["https://www.googleapis.com/auth/drive.file"] // ✅ allows file upload + create
+);
 
 const drive = google.drive({ version: "v3", auth });
 

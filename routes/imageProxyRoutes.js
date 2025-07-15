@@ -8,11 +8,16 @@ dotenv.config();
 const router = express.Router();
 
 // ✅ Google Drive Auth Setup
-const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(process.cwd(), "util/service-account.json"),
-  scopes: ["https://www.googleapis.com/auth/drive.readonly"],
-});
-
+// const auth = new google.auth.GoogleAuth({
+//   keyFile: path.join(process.cwd(), "util/service-account.json"),
+//   scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+// });
+const auth = new google.auth.JWT(
+  process.env.GOOGLE_CLIENT_EMAIL,
+  null,
+  process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  ['https://www.googleapis.com/auth/drive.readonly']
+);
 const drive = google.drive({ version: "v3", auth });
 
 // ✅ GET /api/image-proxy/:fileId → Stream the file
